@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import randomInteger from 'random-int';
+import bcrypt from "bcryptjs";
 
 const UserSchema = new mongoose.Schema({
     firstName: {
@@ -20,7 +21,6 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, "Password must contain: Minimum eight characters, at least one uppercase letter, one lowercase letter and one number"],
         required: [true, "Password can not be null"],
     },
     gender: {
@@ -29,7 +29,8 @@ const UserSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
-        match: [/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, "Invalid phone format"]
+        match: [/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, "Invalid phone format"],
+        unique:true
     },
     profilePhoto: {
         type: String,
@@ -64,6 +65,12 @@ const UserSchema = new mongoose.Schema({
     }
 });
 
+UserSchema.pre("save", function(next)
+{
+    if(this.isModified("password"))
+    this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync());
+    next(); 
+});
 
 UserSchema.methods.createVerificationCode = function()
 {

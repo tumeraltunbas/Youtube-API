@@ -23,7 +23,7 @@ const UserSchema = new mongoose.Schema({
         required: [true, "Password can not be null"],
     },
     gender: {
-        type: Booelan,
+        type: Boolean,
         required:[true, "Gender can not be null"]
     },
     phone: {

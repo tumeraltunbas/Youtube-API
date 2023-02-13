@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import randomInteger from 'random-int';
 
 const UserSchema = new mongoose.Schema({
     firstName: {
@@ -62,6 +63,21 @@ const UserSchema = new mongoose.Schema({
         default:Date.now()
     }
 });
+
+
+UserSchema.methods.createVerificationCode = function()
+{
+    return randomInteger(111111,999999);
+}
+
+UserSchema.methods.emailVerification = function()
+{
+    const verificationCode = this.createVerificationCode();
+    this.emailVerificationCode = verificationCode;
+    this.emailVerificationCodeExpires = process.env.EMAIL_VERIFICATION_CODE_EXPIRES
+    this.save();
+    return verificationCode;
+}
 
 const User = mongoose.model("User", UserSchema);
 export default User;

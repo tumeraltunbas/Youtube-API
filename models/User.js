@@ -54,7 +54,7 @@ const UserSchema = new mongoose.Schema({
         default:false
     },
     isActive: {
-        type:Booelan,
+        type:Boolean,
         default:0
     },
     createdAt: {

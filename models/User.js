@@ -74,7 +74,7 @@ UserSchema.methods.emailVerification = function()
 {
     const verificationCode = this.createVerificationCode();
     this.emailVerificationCode = verificationCode;
-    this.emailVerificationCodeExpires = process.env.EMAIL_VERIFICATION_CODE_EXPIRES
+    this.emailVerificationCodeExpires = new Date(Date.now() +  Number(process.env.EMAIL_VERIFICATION_CODE_EXPIRES))
     this.save();
     return verificationCode;
 }

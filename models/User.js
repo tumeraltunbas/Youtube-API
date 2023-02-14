@@ -56,6 +56,9 @@ const UserSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    lastPasswordChangedAt: {
+        type:Date,
+    },
     isActive: {
         type:Boolean,
         default:0

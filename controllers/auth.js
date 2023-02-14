@@ -94,3 +94,29 @@ export const forgotPassword = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const resetPassword = async(req, res, next) => {
+    try {
+        const {resetPasswordToken} = req.query;
+        const {password} = req.body;
+        const user = await User.findOne(
+            {$and : [
+            {resetPasswordToken:resetPasswordToken}, 
+            {resetPasswordTokenExpires: {$gt: Date.now()}}]}).select("resetPasswordToken resetPasswordTokenExpires password");
+        if(!user)
+        return next(new CustomizedError(400,"Your reset password token wrong or expired"));
+        if(!validateInputs(password))
+        return next(new CustomizedError(400, "Please provide a password"));
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+        if(!passwordRegex.test(password))
+        return next(new CustomizedError(400,"Password must contain: Minimum eight characters, at least one uppercase letter, one lowercase letter and one number"));
+        user.password = password;
+        user.resetPasswordToken = null;
+        user.resetPasswordTokenExpires = null;
+        await user.save();
+        return res.status(200).json({success:true, message:"Your password successfully changed"})
+    }
+    catch(err) {
+        return next(err);
+    }
+}

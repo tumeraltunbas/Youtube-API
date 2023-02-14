@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import randomInteger from 'random-int';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import {generate} from "randomstring";
 
 const UserSchema = new mongoose.Schema({
     firstName: {
@@ -59,10 +60,10 @@ const UserSchema = new mongoose.Schema({
     lastPasswordChangedAt: {
         type:Date,
     },
-    resetPasswordCode: {
+    resetPasswordToken: {
         type:String,
     },
-    resetPasswordCodeExpires: {
+    resetPasswordTokenExpires: {
         type:Date
     },
     isActive: {
@@ -106,7 +107,7 @@ UserSchema.methods.createJwt = function() {
 }
 
 UserSchema.methods.resetPassword = function() {
-    const verificationCode = this.createVerificationCode();
+    const verificationCode = bcrypt.hashSync(generate(15));
     this.resetPasswordCode = verificationCode;
     this.resetPasswordCodeExpires = new Date(Date.now() + Number(process.env.RESET_PASSWORD_TOKEN_EXPIRES));
     this.save();

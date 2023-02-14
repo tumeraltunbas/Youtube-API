@@ -105,5 +105,13 @@ UserSchema.methods.createJwt = function() {
     return token; 
 }
 
+UserSchema.methods.resetPassword = function() {
+    const verificationCode = this.createVerificationCode();
+    this.resetPasswordCode = verificationCode;
+    this.resetPasswordCodeExpires = new Date(Date.now() + Number(process.env.RESET_PASSWORD_TOKEN_EXPIRES));
+    this.save();
+    return verificationCode;
+}
+
 const User = mongoose.model("User", UserSchema);
 export default User;

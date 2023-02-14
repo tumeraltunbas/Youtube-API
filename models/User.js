@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import randomInteger from 'random-int';
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const UserSchema = new mongoose.Schema({
     firstName: {
@@ -84,6 +85,15 @@ UserSchema.methods.emailVerification = function()
     this.emailVerificationCodeExpires = new Date(Date.now() +  Number(process.env.EMAIL_VERIFICATION_CODE_EXPIRES))
     this.save();
     return verificationCode;
+}
+
+UserSchema.methods.createJwt = function() {
+    const payload = {
+        id: this._id,
+        lastName: this.lastName
+    };
+    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn:process.env.JWT_EXPIRES});
+    return token; 
 }
 
 const User = mongoose.model("User", UserSchema);

@@ -1,7 +1,10 @@
-import { createMailOptions, sendMail } from "../helpers/email/emailHelpers.js";
 import CustomizedError from "../helpers/error/CustomizedError.js";
+import { validateInputs } from "../helpers/inputHelpers/inputHelpers.js";
+import { sendJwtToCookie } from "../helpers/jwt/jwt.js";
 import { sendEmailVerificationCode } from "../helpers/modelHelpers/modelHelpers.js";
 import User from "../models/User.js";
+import bcrypt from "bcryptjs";
+
 export const register = async(req, res, next) => {
     try{
         const {firstName, lastName, email, password, gender} = req.body;
@@ -10,7 +13,7 @@ export const register = async(req, res, next) => {
         return next(new CustomizedError(400,"Password must contain: Minimum eight characters, at least one uppercase letter, one lowercase letter and one number"));
         const user = await User.create({firstName:firstName, lastName:lastName, email:email, password:password, gender:gender});       
         await sendEmailVerificationCode(user); 
-        return res.status(200).json({success:true, message:`Email verification code sent to ${email}`, data:user});
+        sendJwtToCookie(user, res);
     }
     catch(err){
         return next(err);
@@ -29,6 +32,21 @@ export const emailVerification = async(req, res, next) => {
         return next(new CustomizedError(400, "Your verification code wrong or expired."));
         await user.update({emailVerificationCode:null, emailVerificationCodeExpires:null, isEmailVerified:true});
         return res.status(200).json({success:true, message:"Your email has been verified."});
+    }
+    catch(err) {
+        return next(err);
+    }
+}
+
+export const login = async(req, res, next) => {
+    try {
+        const {email, password} = req.body;
+        if(!validateInputs(email, password))
+        return next(new CustomizedError(400, "Please make sure you fill all the fields"));
+        const user = await User.findOne({email:email}).select("password");
+        if(!bcrypt.compareSync(password, user.password ))
+        return next(new CustomizedError(400, "Your password is wrong"));
+        sendJwtToCookie(user, res);
     }
     catch(err) {
         return next(err);

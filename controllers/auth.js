@@ -61,3 +61,22 @@ export const logout = (req, res, next) => {
         return next(err);
     }
 }
+
+export const changePassword = async(req, res, next) => {
+    try {
+        const {oldPassword, newPassword} = req.body;
+        const user = await User.findOne({_id:req.user.id}).select("password");
+        if(!bcrypt.compareSync(oldPassword, user.password))
+        return next(new CustomizedError(400, "Old password is wrong"));
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+        if(!passwordRegex.test(newPassword))
+        return next(new CustomizedError(400,"Password must contain: Minimum eight characters, at least one uppercase letter, one lowercase letter and one number"));
+        user.password = newPassword;
+        user.lastPasswordChangedAt = Date.now();
+        await user.save();
+        return res.status(200).json({success:true, message:"Your password successfully changed"});
+    }
+    catch(err) {
+        return next(err);
+    }
+}

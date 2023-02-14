@@ -114,12 +114,11 @@ UserSchema.methods.createJwt = function() {
 }
 
 UserSchema.methods.resetPassword = async function() {
-    const verificationCode = bcrypt.hashSync(generate(15));
-    this.resetPasswordCode = verificationCode;
-    this.resetPasswordCodeExpires = new Date(Date.now() +  Number(process.env.RESET_PASSWORD_TOKEN_EXPIRES))
-    console.log(this.resetPasswordCodeExpires);
+    const resetPasswordToken = bcrypt.hashSync(generate(15));
+    this.resetPasswordToken = resetPasswordToken;
+    this.resetPasswordTokenExpires = new Date(Date.now() +  Number(process.env.RESET_PASSWORD_TOKEN_EXPIRES));
     await this.save();
-    return verificationCode;
+    return resetPasswordToken;
 }
 
 const User = mongoose.model("User", UserSchema);

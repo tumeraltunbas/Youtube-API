@@ -38,10 +38,12 @@ const UserSchema = new mongoose.Schema({
         type: String,
     },
     emailVerificationCode: {
-        type: String
+        type: String,
+        default:null
     },
     emailVerificationCodeExpires: {
-        type: Date
+        type: Date,
+        default:null
     },
     isEmailVerified: {
         type: Boolean,
@@ -49,9 +51,11 @@ const UserSchema = new mongoose.Schema({
     },
     phoneVerificationCode: {
         type: String,
+        default:null
     },
     phoneVerificationCodeExpires: {
-        type: Date
+        type: Date,
+        default:null
     },
     isPhoneVerified: {
         type:Boolean,
@@ -59,12 +63,15 @@ const UserSchema = new mongoose.Schema({
     },
     lastPasswordChangedAt: {
         type:Date,
+        default:null
     },
     resetPasswordToken: {
         type:String,
+        default:null
     },
     resetPasswordTokenExpires: {
-        type:Date
+        type:Date,
+        default:null
     },
     isActive: {
         type:Boolean,
@@ -88,12 +95,12 @@ UserSchema.methods.createVerificationCode = function()
     return randomInteger(111111,999999);
 }
 
-UserSchema.methods.emailVerification = function()
+UserSchema.methods.emailVerification = async function()
 {
     const verificationCode = this.createVerificationCode();
     this.emailVerificationCode = verificationCode;
     this.emailVerificationCodeExpires = new Date(Date.now() +  Number(process.env.EMAIL_VERIFICATION_CODE_EXPIRES))
-    this.save();
+    await this.save();
     return verificationCode;
 }
 
@@ -106,11 +113,12 @@ UserSchema.methods.createJwt = function() {
     return token; 
 }
 
-UserSchema.methods.resetPassword = function() {
+UserSchema.methods.resetPassword = async function() {
     const verificationCode = bcrypt.hashSync(generate(15));
     this.resetPasswordCode = verificationCode;
-    this.resetPasswordCodeExpires = new Date(Date.now() + Number(process.env.RESET_PASSWORD_TOKEN_EXPIRES));
-    this.save();
+    this.resetPasswordCodeExpires = new Date(Date.now() +  Number(process.env.RESET_PASSWORD_TOKEN_EXPIRES))
+    console.log(this.resetPasswordCodeExpires);
+    await this.save();
     return verificationCode;
 }
 

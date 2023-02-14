@@ -1,7 +1,7 @@
 import CustomizedError from "../helpers/error/CustomizedError.js";
 import { validateInputs } from "../helpers/inputHelpers/inputHelpers.js";
 import { sendJwtToCookie } from "../helpers/jwt/jwt.js";
-import { sendEmailVerificationCode } from "../helpers/modelHelpers/modelHelpers.js";
+import { sendEmailVerificationCode, sendResetPasswordCode } from "../helpers/modelHelpers/modelHelpers.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 
@@ -75,6 +75,20 @@ export const changePassword = async(req, res, next) => {
         user.lastPasswordChangedAt = Date.now();
         await user.save();
         return res.status(200).json({success:true, message:"Your password successfully changed"});
+    }
+    catch(err) {
+        return next(err);
+    }
+}
+
+export const forgotPassword = async(req, res, next) => {
+    try {
+        const {email} = req.body;
+        const user = await User.findOne({email:email}).select("email");
+        if(!user)
+        return next(new CustomizedError(400, "There is no user with that email"));
+        sendResetPasswordCode(user);
+        return res.status(200).json({success:true, message: `Password reset code sent to ${user.email[0]}*****@${user.email.split("@")[1]}.`});
     }
     catch(err) {
         return next(err);

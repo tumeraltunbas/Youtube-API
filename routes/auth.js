@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { register,emailVerification, login, logout,changePassword,forgotPassword,resetPassword } from "../controllers/auth.js";
+import { register,emailVerification, login, logout,changePassword,forgotPassword,resetPassword,uploadProfilePhoto } from "../controllers/auth.js";
 import { isEmailVerified, getAccessToRoute } from "../middlewares/auth/auth.js";
 
 const router = Router();
@@ -10,5 +10,6 @@ router.get("/logout", getAccessToRoute, logout);
 router.post("/change-password", getAccessToRoute, changePassword);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
+router.post("/profile-photo-upload", getAccessToRoute, uploadProfilePhoto);
 
 export default router;

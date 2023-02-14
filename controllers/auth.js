@@ -4,6 +4,7 @@ import { sendJwtToCookie } from "../helpers/jwt/jwt.js";
 import { sendEmailVerificationCode, sendResetPasswordLink } from "../helpers/modelHelpers/modelHelpers.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
+import { uploadFile } from "../helpers/fileUpload/fileUpload.js";
 
 export const register = async(req, res, next) => {
     try{
@@ -115,6 +116,19 @@ export const resetPassword = async(req, res, next) => {
         user.resetPasswordTokenExpires = null;
         await user.save();
         return res.status(200).json({success:true, message:"Your password successfully changed"})
+    }
+    catch(err) {
+        return next(err);
+    }
+}
+
+export const uploadProfilePhoto = async (req, res, next) => {
+    try {
+        const user = await User.findOne({_id:req.user.id}).select("_id profilePhoto");
+        await uploadFile(req, next, "user", user._id);
+        const fileName = req.files.file.name;
+        await user.updateOne({profilePhoto:fileName});
+        return res.status(200).json({success:true, message:"Your profile picture successfully uploaded."});
     }
     catch(err) {
         return next(err);

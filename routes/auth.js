@@ -9,4 +9,5 @@ router.post("/login", isEmailVerified, login);
 router.get("/logout", getAccessToRoute, logout);
 router.post("/change-password", getAccessToRoute, changePassword);
 router.post("/forgot-password", forgotPassword);
+
 export default router;

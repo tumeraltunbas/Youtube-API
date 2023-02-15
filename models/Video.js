@@ -80,3 +80,6 @@ VideoSchema.pre("save", function(next)
     this.slug = generate(14);
     next();
 });
+
+const Video = mongoose.model("Video", VideoSchema);
+export default Video;

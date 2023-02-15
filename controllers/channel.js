@@ -39,3 +39,14 @@ export const editChannelInformations = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const getChannel = async(req, res, next) => {
+    try {
+        const {slug} = req.params;
+        const channel = await Channel.findOne({slug:slug}).select("name channelDescription videos videoCount subscribeCount channelProfilePhoto location channels email totalViews");
+        return res.status(200).json({success:true, data:channel}); 
+    }
+    catch(err){
+        return next(err);
+    }
+}

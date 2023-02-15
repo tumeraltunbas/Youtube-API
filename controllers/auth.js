@@ -5,6 +5,7 @@ import { sendEmailVerificationCode, sendResetPasswordLink } from "../helpers/mod
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { uploadFile } from "../helpers/fileUpload/fileUpload.js";
+import { sendSms } from "../helpers/sms/smsSender.js";
 
 export const register = async(req, res, next) => {
     try{
@@ -131,6 +132,25 @@ export const uploadProfilePhoto = async (req, res, next) => {
         return res.status(200).json({success:true, message:"Your profile picture successfully uploaded."});
     }
     catch(err) {
+        return next(err);
+    }
+}
+
+export const editInformations = async(req, res, next) => {
+    try{
+        const {firstName, lastName, gender, phone} = req.body;
+        const user = await User.findOne({_id:req.user.id}).select("firstName lastName gender phone");
+        await user.updateOne({firstName:firstName, lastName:lastName, gender:gender, phone:phone});
+        if(phone)
+        {
+            const verificationCode = await user.phoneVerification();
+            sendSms(user.phone, `Your phone verification code is ${verificationCode}. This code is only valid for 10 minutes.`);
+            return res.status(200).json({success:true, message: `Your verification code sent to ${user.phone}`});
+        }
+        else
+        return res.status(200).json({success:true, message:"Your information successfully updated."});
+    }
+    catch(err){
         return next(err);
     }
 }

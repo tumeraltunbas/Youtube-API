@@ -13,12 +13,20 @@ const ChannelSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "Video"
     }],
+    videoCount: {
+        type:Number,
+        default:0
+    },
     subscribers: [
         {
             type: mongoose.Schema.ObjectId,
             ref:"Channel"
         }
     ],
+    subscribeCount: {
+        type:Number,
+        default:0
+    },
     channelProfilePhoto: {
         type:String,
         default:"profile.jpg"

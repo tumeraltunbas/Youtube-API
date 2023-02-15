@@ -154,3 +154,17 @@ export const editInformations = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const phoneVerification = async(req, res, next) => {
+    try {
+        const {phoneVerificationCode} = req.body;
+        const user = await User.findOne({$and: [{phoneVerificationCode:phoneVerificationCode}, {phoneVerificationCodeExpires: {$gt:Date.now()}}]}).select("phoneVerificationCode phoneVerificationCodeExpires isPhoneVerified");
+        if(!user)
+        return next(new CustomizedError(400, "Your phone verification code is wrong or expired"));
+        await user.update({phoneVerificationCode:null, phoneVerificationCodeExpires:null, isPhoneVerified:true});
+        return res.status(200).json({success:true, message:"Your phone successfully verified"});
+    }
+    catch(err){ 
+        return next(err);
+    }
+}

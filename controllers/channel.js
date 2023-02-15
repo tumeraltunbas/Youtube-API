@@ -21,7 +21,7 @@ export const uploadChannelProfilePhoto = async(req, res, next) => {
     try {
         const channel = await Channel.findOne({user:req.user.id}).select("_id channelProfilePhoto");
         const fileName = await uploadFile(req, res, next, "channel", channel.id);
-        channel.updateOne({channelProfilePhoto:fileName});
+        await channel.updateOne({channelProfilePhoto:fileName}, {new:true});
         return res.status(200).json({success:true, message:"Channel profile photo successfully uploaded"});
     }
     catch(err) {

@@ -58,6 +58,10 @@ const ChannelSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
+    isChannelVerified: {
+        type:Boolean,
+        default:false
+    },
     isVisible: {
         type:Boolean,
         default:true

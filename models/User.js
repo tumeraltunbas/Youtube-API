@@ -37,6 +37,11 @@ const UserSchema = new mongoose.Schema({
     profilePhoto: {
         type: String,
     },
+    role: {
+        type:String,
+        enum:["user","staff","admin"],
+        default:"user"
+    },
     emailVerificationCode: {
         type: String,
         default:null

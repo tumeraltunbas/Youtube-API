@@ -62,10 +62,6 @@ const VideoSchema = new mongoose.Schema({
         type:Boolean,
         default:true
     },
-    uploadedBy:{
-        type: mongoose.Schema.ObjectId,
-        required:[true, "Uploaded By can not be null"]
-    },
     uploadedAt: {
         type:Date,
         default: Date.now()

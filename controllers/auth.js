@@ -126,8 +126,7 @@ export const resetPassword = async(req, res, next) => {
 export const uploadProfilePhoto = async (req, res, next) => {
     try {
         const user = await User.findOne({_id:req.user.id}).select("_id profilePhoto");
-        await uploadFile(req, next, "user", user._id);
-        const fileName = req.files.file.name;
+        const fileName = await uploadFile(req, res, next, "user", user._id);
         await user.updateOne({profilePhoto:fileName});
         return res.status(200).json({success:true, message:"Your profile picture successfully uploaded."});
     }

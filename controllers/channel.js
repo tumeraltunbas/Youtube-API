@@ -28,3 +28,14 @@ export const uploadChannelProfilePhoto = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const editChannelInformations = async(req, res, next) => {
+    try {
+        const {name, channelDescription, location} = req.body;
+        await Channel.updateOne({user:req.user.id}, {name:name, channelDescription:channelDescription, location:location}, {runValidators:true});
+        return res.status(200).json({success:true, message:"Your channel's information successfully changed"});
+    }
+    catch(err){
+        return next(err);
+    }
+}

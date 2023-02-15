@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { createChannel,uploadChannelProfilePhoto } from "../controllers/channel.js";
+import { createChannel,uploadChannelProfilePhoto,editChannelInformations } from "../controllers/channel.js";
 import { getAccessToRoute } from "../middlewares/auth/auth.js";
 
 const router = Router();

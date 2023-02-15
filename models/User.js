@@ -104,6 +104,14 @@ UserSchema.methods.emailVerification = async function()
     return verificationCode;
 }
 
+UserSchema.methods.phoneVerification = async function() {
+    const verificationCode = this.createVerificationCode();
+    this.phoneVerificationCode = verificationCode;
+    this.phoneVerificationCodeExpires = new Date(Date.now() + Number(process.env.PHONE_VERIFICATION_CODE_EXPIRES));
+    await this.save();
+    return verificationCode;
+}
+
 UserSchema.methods.createJwt = function() {
     const payload = {
         id: this._id,

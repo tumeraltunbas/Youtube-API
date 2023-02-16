@@ -38,7 +38,6 @@ export const editVideo = async(req, res, next) => {
         const {videoSlug} = req.params;
         const {title, description} = req.body;
         const video = await Video.findOne({slug:videoSlug});
-        console.log(req);
         if(req.files)
         {
             var fileName = uploadFile(req, res, next, "thumbnail", video.id)

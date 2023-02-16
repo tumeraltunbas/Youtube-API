@@ -22,10 +22,12 @@ const VideoSchema = new mongoose.Schema({
         ref: "Channel",
         required:[true, "Channel can not be null"]
     },
-    views: {
-        type:Number,
-        default:0
-    },
+    views: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: "User"
+        }
+    ],
     likes: [
         {
             type: mongoose.Schema.ObjectId,
@@ -38,6 +40,10 @@ const VideoSchema = new mongoose.Schema({
             ref: "User"
         }
     ],
+    viewCount: {
+        type:Number,
+        default:0
+    },
     likeCount: {
         type:Number,
         default:0

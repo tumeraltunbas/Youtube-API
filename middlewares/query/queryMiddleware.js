@@ -14,3 +14,15 @@ export const isVideoExists = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const isChannelExist = async(req, res, next) => {
+    try {
+        const {channelSlug} = req.params;
+        if(!await Channel.findOne({slug:channelSlug}).select("_id"))
+        return next(new CustomizedError(400, "There is no channel with this slug"));
+        next();
+    }
+    catch(err) {
+        return next(err);
+    }
+}

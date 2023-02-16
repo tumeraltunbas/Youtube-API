@@ -7,7 +7,7 @@ const router = Router();
 router.post("/create", getAccessToRoute, createChannel);
 router.post("/profile-photo", getAccessToRoute, uploadChannelProfilePhoto);
 router.put("/edit", getAccessToRoute, editChannelInformations);
-router.get("/:slug", getChannel);
-router.use("/:slug", videoRoutes);
+router.get("/:channelSlug", getChannel);
+router.use("/:channelSlug", videoRoutes);
 
 export default router;

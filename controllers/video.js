@@ -15,7 +15,7 @@ export const uploadVideo = async(req, res, next) => {
         if(!allowedMimetypes.includes(video.mimetype))
         return res.status(400).json({success:false, message:"You can upload only mp4 and avi files"});
         const channel = await Channel.findOne({user:req.user.id});
-        const videoName = String(channel.id + '_' + randomInteger(4) + '.' + video.mimetype.split("/")[1]);
+        const videoName = String(channel.id + '_' + randomInteger(1111,9999) + '.' + video.mimetype.split("/")[1]);
         let uploadPath = path.join(root.path, "public", "videos" , videoName);
         await video.mv(uploadPath, function(err){
             return next(err);
@@ -46,6 +46,23 @@ export const editVideo = async(req, res, next) => {
         return res.status(200).json({success:true, message:"Your video successfully updated"});
     }
     catch(err){
+        return next(err);
+    }
+}
+
+export const watchVideo = async(req, res, next) => {
+    try {
+        const {videoSlug} = req.params;
+        const video = await Video.findOne({slug:videoSlug}).select("title description video views viewCount channel likeCount dislikeCount comments");
+        if(!video.views.includes(req.user.id))
+        {
+            video.views.push(req.user.id);
+            video.viewCount +=1;
+        }
+        await video.save();
+        return res.status(200).json({success:true, data:video});
+    }
+    catch(err) {
         return next(err);
     }
 }

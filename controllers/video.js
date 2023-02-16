@@ -20,7 +20,7 @@ export const uploadVideo = async(req, res, next) => {
         await video.mv(uploadPath, function(err){
             return next(err);
         });
-        const uploadedVideo = await Video.create({title:title, description:description, video:videoName, channel:channel});
+        const uploadedVideo = await Video.create({title:title, description:description, video:videoName});
         if(req.files.file)
         {
             const thumbnail = await uploadFile(req, res, next, "thumbnails", uploadedVideo.id);
@@ -32,21 +32,3 @@ export const uploadVideo = async(req, res, next) => {
         return next(err);
     }
 } 
-
-export const editVideo = async(req, res, next) => {
-    try{
-        const {videoSlug} = req.params;
-        const {title, description} = req.body;
-        const video = await Video.findOne({slug:videoSlug});
-        console.log(req);
-        if(req.files)
-        {
-            var fileName = uploadFile(req, res, next, "thumbnail", video.id)
-        }
-        await video.updateOne({title:title, description:description, thumbnail:fileName});
-        return res.status(200).json({success:true, message:"Your video successfully updated"});
-    }
-    catch(err){
-        return next(err);
-    }
-}

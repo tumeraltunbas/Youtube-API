@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import {generate} from "randomstring";
+import Channel from "./Channel.js";
 
 const VideoSchema = new mongoose.Schema({
     title: {
@@ -76,11 +77,15 @@ const VideoSchema = new mongoose.Schema({
 
 });
 
-//will be refactor
-VideoSchema.pre("save", function(next)
+VideoSchema.pre("save", async function(next)
 {
     if(this.isModified("video"))
-    this.slug = generate(14);
+    {
+        this.slug = generate(14);
+        const channel = await Channel.findOne({_id:this.channel}).select("slug");
+        this.url = String(process.env.DOMAIN + "/channel/" + channel.slug + "/watch/" + this.slug);
+        next();
+    }
     next();
 });
 

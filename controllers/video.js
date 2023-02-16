@@ -4,6 +4,7 @@ import randomInteger from "random-int";
 import path from "path";
 import root from "app-root-path";
 import { uploadFile } from "../helpers/fileUpload/fileUpload.js";
+import CustomizedError from "../helpers/error/CustomizedError.js";
 
 export const uploadVideo = async(req, res, next) => {
     try {
@@ -61,6 +62,22 @@ export const watchVideo = async(req, res, next) => {
         }
         await video.save();
         return res.status(200).json({success:true, data:video});
+    }
+    catch(err) {
+        return next(err);
+    }
+}
+
+export const likeVideo = async(req, res, next) => {
+    try{
+        const {videoSlug} = req.params;
+        const video = await Video.findOne({slug:videoSlug}).select("likeCount likes")
+        if(video.likes.includes(req.user.id))
+        return next(new CustomizedError(400, "You already liked this video"));
+        video.likes.push(req.user.id);
+        video.likeCount += 1
+        await video.save();
+        res.status(200).json({success:true, message:"The video has been successfully liked"});
     }
     catch(err) {
         return next(err);

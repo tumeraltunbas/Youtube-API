@@ -19,7 +19,8 @@ const VideoSchema = new mongoose.Schema({
     },
     channel: {
         type: mongoose.Schema.ObjectId,
-        ref: "Channel"
+        ref: "Channel",
+        required:[true, "Channel can not be null"]
     },
     views: {
         type:Number,
@@ -72,7 +73,7 @@ const VideoSchema = new mongoose.Schema({
 //will be refactor
 VideoSchema.pre("save", function(next)
 {
-    if(this.isModified("uploadedAt")) // it will never change
+    if(this.isModified("video"))
     this.slug = generate(14);
     next();
 });

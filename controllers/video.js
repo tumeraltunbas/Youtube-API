@@ -83,3 +83,24 @@ export const likeVideo = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const dislikeVideo = async(req, res, next) => {
+    try {
+        const {videoSlug} = req.params;
+        const video = await Video.findOne({slug:videoSlug}).select("likeCount likes dislikeCount dislikes")
+        if(video.dislikes.includes(req.user.id))
+        return next(new CustomizedError(400, "You already disliked this video"));
+        if(video.likes.includes(req.user.id))
+        {
+            video.likes.splice(req.user.id,1);
+            video.likeCount-=1;
+        }
+        video.dislikes.push(req.user.id);
+        video.dislikeCount+=1;
+        await video.save();
+        return res.status(200).json({success:true, message: "The video has been successfully disliked"});
+    }
+    catch(err) {
+        return next(err);
+    }
+}

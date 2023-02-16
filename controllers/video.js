@@ -71,9 +71,14 @@ export const watchVideo = async(req, res, next) => {
 export const likeVideo = async(req, res, next) => {
     try{
         const {videoSlug} = req.params;
-        const video = await Video.findOne({slug:videoSlug}).select("likeCount likes")
+        const video = await Video.findOne({slug:videoSlug}).select("likeCount likes dislikeCount dislikes")
         if(video.likes.includes(req.user.id))
         return next(new CustomizedError(400, "You already liked this video"));
+        if(video.dislikes.includes(req.user.id))
+        {
+            video.dislikes.splice(req.user.id,1);
+            video.dislikeCount-=1;
+        }
         video.likes.push(req.user.id);
         video.likeCount += 1
         await video.save();

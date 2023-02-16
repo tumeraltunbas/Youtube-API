@@ -1,6 +1,8 @@
 import CustomizedError from "../../helpers/error/CustomizedError.js";
 import User from "../../models/User.js";
 import jwt from "jsonwebtoken";
+import Video from "../../models/Video.js";
+import Channel from "../../models/Channel.js";
 
 export const isEmailVerified = async(req, res, next) => {
     try {
@@ -26,4 +28,20 @@ export const getAccessToRoute = (req, res, next) => {
         },
         next();
     });
+}
+
+export const getVideoOwnerAccess = async(req, res, next) => {
+    try {
+        const {videoSlug} = req.params;
+        const video = await Video.findOne({slug:videoSlug});
+        if(!video)
+        return next(new CustomizedError(400, "There is no video with that slug"));
+        const channel = await Channel.findOne({user:req.user.id});
+        if(video.channel != channel.id)
+        return next(new CustomizedError(403, "You are not owner of video"));
+        next();
+    } 
+    catch(err) {
+        return next(err);
+    }
 }

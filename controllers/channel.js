@@ -66,3 +66,19 @@ export const subscribe = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const unsubscribe = async(req, res, next) => {
+    try {
+        const {channelSlug} = req.params;
+        const channel = await Channel.findOne({slug:channelSlug}).select("subscribers subscribeCount");
+        if(!channel.subscribers.includes(req.user.id))
+        return next(new CustomizedError(400, "You already did not subscribe to this channel"));
+        channel.subscribers.splice(req.user.id,1);
+        channel.subscribeCount -=1;
+        await channel.save();
+        return res.status(200).json({success:true, message:"Unsubscribe successfull"});
+    }
+    catch(err) {
+        return next(err);
+    }
+}

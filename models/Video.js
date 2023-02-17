@@ -60,6 +60,10 @@ const VideoSchema = new mongoose.Schema({
             ref: "Comment"
         }
     ],
+    commentCount: {
+        type: Number,
+        default:0
+    },
     slug:{
         type: String,
     },

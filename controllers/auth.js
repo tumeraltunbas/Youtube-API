@@ -167,3 +167,18 @@ export const phoneVerification = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const deactiveAccount = async(req, res, next) => {
+    try{
+        const {password} = req.body;
+        const user = await User.findById(req.user.id).select("_id password isActive");
+        if(!bcrypt.compareSync(password, user.password))
+        return next(new CustomizedError(400, "You have entered wrong password"));
+        user.isActive = false;
+        await user.save();
+        return res.status(200).json({success:true, });
+    }
+    catch(err) {
+        return next(err);
+    }
+}

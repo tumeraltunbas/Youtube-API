@@ -3,6 +3,8 @@ import randomInteger from 'random-int';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {generate} from "randomstring";
+import Comment from "./Comment.js";
+import Channel from "./Channel.js";
 
 const UserSchema = new mongoose.Schema({
     firstName: {
@@ -80,7 +82,7 @@ const UserSchema = new mongoose.Schema({
     },
     isActive: {
         type:Boolean,
-        default:0
+        default:true
     },
     createdAt: {
         type: Date,

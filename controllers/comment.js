@@ -54,3 +54,24 @@ export const likeComment = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const dislikeComment = async(req, res, next) => {
+    try {
+        const {commentId} = req.params;
+        const comment = await Comment.findById(commentId).select("_id likes likeCount dislikes dislikeCount");
+        if(comment.dislikes.includes(req.user.id))
+        return next(new CustomizedError(400, "You already liked this comment"));
+        if(comment.likes.includes(req.user.id))
+        {
+            comment.likes.splice(req.user.id, 1);
+            comment.likeCount -=1;
+        }
+        comment.dislikes.push(req.user.id);
+        comment.dislikeCount +=1;
+        await comment.save();
+        res.status(200).json({success:true, message:"Comment has been disliked"});
+    }
+    catch(err) {
+        return next(err);
+    }
+}

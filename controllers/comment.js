@@ -75,3 +75,18 @@ export const dislikeComment = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const editComment = async(req, res, next) => {
+    try {
+        const {commentId} = req.params;
+        const {text} = req.body;
+        const comment = await Comment.findById(commentId).select("_id text");
+        comment.text= text;
+        comment.lastEdited = Date.now();
+        await comment.save();
+        return res.status(200).json({success:true, message: "Comment has been edited"});
+    }
+    catch(err){
+        return next(err);
+    }
+}

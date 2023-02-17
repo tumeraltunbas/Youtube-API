@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import slugify from "slugify";
+import Video from "./Video.js";
 
 const ChannelSchema = new mongoose.Schema({
     name: {
@@ -79,6 +80,14 @@ ChannelSchema.pre("save", function(next)
     next();
 });
 
+ChannelSchema.pre("save",async function(next)
+{
+    if(this.isModified("isVisible")){
+        await Video.updateMany({channel:this.id}, {isVisible:false}, {new:true});
+        next();
+    }
+    next();
+});
 
 const Channel = mongoose.model("Channel", ChannelSchema);
 export default Channel;

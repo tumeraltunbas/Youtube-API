@@ -97,6 +97,19 @@ UserSchema.pre("save", function(next)
     next(); 
 });
 
+UserSchema.pre("save", async function(next)
+{
+    if(this.isModified("isActive"))
+    {
+        await Comment.updateMany({user:this.id}, {isVisible:false});
+        const channel = await Channel.findOne({user:this.id});
+        channel.isVisible = false;
+        await channel.save(); //to be able to run the pre hook in the channel model
+        next();
+    }
+    next();
+});
+
 UserSchema.methods.createVerificationCode = function()
 {
     return randomInteger(111111,999999);

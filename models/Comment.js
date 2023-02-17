@@ -37,6 +37,10 @@ const CommentSchema =  new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    lastEdited: {
+        type: Date,
+        default:null,
+    },
     deletedAt: {
         type:Date,
         default: null

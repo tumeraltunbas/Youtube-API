@@ -51,5 +51,19 @@ const CommentSchema =  new mongoose.Schema({
     },
 });
 
+//When a comment is updated, all its likes and dislikes will be deleted.
+CommentSchema.pre("save", function(next)
+{
+    if(this.isModified("lastEdited"))
+    {
+        this.likeCount = 0;
+        this.dislikeCount = 0;
+        this.likes = [];
+        this.dislikes = [];
+        next();
+    }
+    next();
+});
+
 const Comment = mongoose.model("Comment", CommentSchema);
 export default Comment;

@@ -26,3 +26,16 @@ export const isChannelExist = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const isCommentExists = async(req, res, next) => {
+    try {
+        const {videoSlug, commentId} = req.params;
+        const video = await Video.findOne({slug:videoSlug}).select("_id comments");
+        if(!video.comments.includes(commentId))
+        return next(new CustomizedError(400, "There is no comment in this video"));
+        next();
+    }
+    catch(err) {
+        return next(err);
+    }
+}

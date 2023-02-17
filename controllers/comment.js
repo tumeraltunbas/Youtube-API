@@ -19,3 +19,17 @@ export const createComment = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const hideComment = async(req, res, next) => {
+    try{
+        const {commentId} = req.params;
+        const comment = await Comment.findOne({_id:commentId}).select("_id isVisible");
+        if(comment.isVisible === false)
+        return next(new CustomizedError(400, "This comment already hidden"));
+        await comment.updateOne({isVisible:false, deletedAt: Date.now()});
+        return res.status(200).json({success:true, message: "Your comment has been hidden"});
+    }
+    catch(err) {
+        return next(err);
+    }
+}

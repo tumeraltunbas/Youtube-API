@@ -67,7 +67,7 @@ export const getPlaylistOwnerAccess = async(req, res, next) => {
         const playlist = await Playlist.findById(playlistId).select("_id user");
         if(playlist.user != req.user.id)
         return next(new CustomizedError(403, "You are not owner of this playlist"));
-        
+        next();
     }
     catch(err){
         return next(err);

@@ -40,3 +40,19 @@ export const addVideoToPlaylist = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const removeVideoToPlaylist = async(req, res, next) => {
+    try{
+        const {videoSlug, playlistId} = req.params;
+        const video = await Video.findOne({slug:videoSlug}).select("_id");
+        const playlist = await Playlist.findById(playlistId).select("_id videos");
+        if(!playlist.videos.includes(video.id))
+        return next(new CustomizedError(400, "This video is not already in this playlist"));
+        playlist.videos.splice(video.id, 1);
+        await playlist.save();
+        return res.status(200).json({success:true, message:"Video has been removed from playlist"});
+    }
+    catch(err){
+        return next(err);
+    }
+}

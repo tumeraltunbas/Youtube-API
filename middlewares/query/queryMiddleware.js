@@ -1,5 +1,6 @@
 import CustomizedError from "../../helpers/error/CustomizedError.js";
 import Channel from "../../models/Channel.js";
+import Playlist from "../../models/Playlist.js";
 import Video from "../../models/Video.js";
 
 export const isVideoExists = async(req, res, next) => {
@@ -36,6 +37,18 @@ export const isCommentExists = async(req, res, next) => {
         next();
     }
     catch(err) {
+        return next(err);
+    }
+}
+
+export const isPlaylistExists = async(req, res, next) => {
+    try{
+        const {playlistId} = req.params;
+        if(!await Playlist.findById(playlistId).select("_id"))
+        return next(new CustomizedError(400, "There is no playlist with that id"));
+        next();
+    }
+    catch(err){
         return next(err);
     }
 }

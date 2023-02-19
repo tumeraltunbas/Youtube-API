@@ -52,3 +52,17 @@ export const isPlaylistExists = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const isVideoExistsInPlaylist = async(req, res, next) => {
+    try{
+        const {videoSlug, playlistId} = req.params;
+        const playlist = await Playlist.findById(playlistId).select("_id videos");
+        const video = await Video.findOne({slug:videoSlug}).select("_id");
+        if(!playlist.videos.includes(video.id))
+        return next(new CustomizedError(400, "There is no video in this playlist"));
+        next();
+    }
+    catch(err){
+        return next(err);
+    }
+}

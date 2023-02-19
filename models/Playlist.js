@@ -16,6 +16,11 @@ const PlaylistSchema = new mongoose.Schema({
         enum: ["public", "private"],
         required:[true, "Privacy can not be null"],
     },
+    user: {
+        type:mongoose.Schema.ObjectId,
+        ref:"User",
+        required:[true, "User can not be null"]
+    },
     createdAt: {
         type:Date,
         default:Date.now()

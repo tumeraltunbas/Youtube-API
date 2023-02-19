@@ -21,6 +21,10 @@ const PlaylistSchema = new mongoose.Schema({
         ref:"User",
         required:[true, "User can not be null"]
     },
+    isVisible: {
+        type:Boolean,
+        default:true
+    },
     createdAt: {
         type:Date,
         default:Date.now()

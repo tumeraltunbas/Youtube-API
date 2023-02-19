@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import Video from "../../models/Video.js";
 import Channel from "../../models/Channel.js";
 import Comment from "../../models/Comment.js";
+import Playlist from "../../models/Playlist.js";
 
 export const isEmailVerified = async(req, res, next) => {
     try {
@@ -52,10 +53,23 @@ export const getCommentOwnerAccess = async(req, res, next) => {
         const {commentId} = req.params;
         const comment = await Comment.findById(commentId).select("_id user");
         if(comment.user != req.user.id)
-        return next(new CustomizedError(400, "You are not owner this comment"));
+        return next(new CustomizedError(403, "You are not owner this comment"));
         next();
     }
     catch(err) {
+        return next(err);
+    }
+}
+
+export const getPlaylistOwnerAccess = async(req, res, next) => {
+    try{
+        const {playlistId} = req.params;
+        const playlist = await Playlist.findById(playlistId).select("_id user");
+        if(playlist.user != req.user.id)
+        return next(new CustomizedError(403, "You are not owner of this playlist"));
+        
+    }
+    catch(err){
         return next(err);
     }
 }

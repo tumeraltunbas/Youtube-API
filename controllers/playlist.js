@@ -56,3 +56,16 @@ export const removeVideoToPlaylist = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const editPlaylist = async(req, res, next) => {
+    try{
+        const {playlistId} = req.params;
+        const {name, privacy} = req.body;
+        await Playlist.updateOne({_id:playlistId},{name:name, privacy:privacy}, {new:true, runValidators:true});
+        return res.status(200).json({success:true, message:"Your playlist has been updated"});
+    }
+    catch(err){
+        return next(err);
+    }
+
+}

@@ -3,6 +3,7 @@ import { editVideo, uploadVideo,watchVideo,likeVideo,dislikeVideo } from "../con
 import { getAccessToRoute, getVideoOwnerAccess } from "../middlewares/auth/auth.js";
 import { isVideoExists } from "../middlewares/query/queryMiddleware.js";
 import commentRoutes from "./comment.js";
+import playlistRoutes from "./playlist.js";
 
 const router = Router({mergeParams:true});
 router.post("/upload", getAccessToRoute, uploadVideo);
@@ -11,6 +12,6 @@ router.get("/watch/:videoSlug", [getAccessToRoute,isVideoExists], watchVideo);
 router.get("/like/:videoSlug", [getAccessToRoute, isVideoExists], likeVideo);
 router.get("/dislike/:videoSlug", [getAccessToRoute, isVideoExists], dislikeVideo);
 router.use("/comments/:videoSlug", commentRoutes);
-
+router.use("/playlist/:videoSlug", playlistRoutes)
 
 export default router;

@@ -28,3 +28,13 @@ export const index = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const trends = async(req, res, next) => {
+    try{
+        const videos = await Video.find({uploadedAt:{$gt: Date.now() - 604800000}}).sort({likeCount:"asc"}).select("title thumbnail video viewCount createdAt channel").populate({path:"channel", select:"name channelProfilePhoto"});
+        return res.status(200).json({success:true, data:videos});
+    }
+    catch(err){
+        return next(err);
+    }
+}

@@ -21,6 +21,10 @@ const PlaylistSchema = new mongoose.Schema({
         ref:"User",
         required:[true, "User can not be null"]
     },
+    isHighlighted: {
+        type:Boolean,
+        default:false
+    },
     isVisible: {
         type:Boolean,
         default:true

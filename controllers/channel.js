@@ -2,6 +2,7 @@ import CustomizedError from "../helpers/error/CustomizedError.js";
 import { uploadFile } from "../helpers/fileUpload/fileUpload.js";
 import Channel from "../models/Channel.js";
 import User from "../models/User.js";
+import Video from "../models/Video.js";
 
 export const createChannel = async(req, res, next) => {
     try{
@@ -88,6 +89,20 @@ export const channelAbout = async(req, res, next) => {
         const {channelSlug} = req.params;
         const channel = await Channel.findOne({slug:channelSlug, isVisible:true}).select("_id channelDescription location totalViews createdAt");
         return res.status(200).json({success:true, data:channel});
+    }
+    catch(err){
+        return next(err);
+    }
+}
+
+export const searchInChannel = async(req, res, next) => {
+    try {
+        const {channelSlug} = req.params;
+        const {s} = req.query;
+        const regex = new RegExp(s,"i");
+        const channel = await Channel.findOne({slug:channelSlug}).select("_id");
+        const videos = await Video.find({title:regex, channel:channel.id, isVisible:true});
+        return res.status(200).json({success:true, data:videos});
     }
     catch(err){
         return next(err);

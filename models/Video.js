@@ -45,6 +45,10 @@ const VideoSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
+    isHighlighted: {
+        type:Boolean,
+        default:false
+    },
     likeCount: {
         type:Number,
         default:0

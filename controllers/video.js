@@ -6,6 +6,19 @@ import root from "app-root-path";
 import { uploadFile } from "../helpers/fileUpload/fileUpload.js";
 import CustomizedError from "../helpers/error/CustomizedError.js";
 
+
+export const getVideosByChannel = async(req, res, next) => {
+    try{
+        const {channelSlug} = req.params;
+        const channel = await Channel.findOne({slug:channelSlug, isVisible:true}).select("_id");
+        const videos = await Video.find({channel:channel.id, isVisible}).select("title thumbnail viewCount createdAt");
+        return res.status(200).json({success:true, data:videos});
+    }
+    catch(err){
+        return next(err);
+    }
+}
+
 export const uploadVideo = async(req, res, next) => {
     try {
         const {title, description} = req.body;

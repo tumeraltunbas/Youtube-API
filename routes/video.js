@@ -1,12 +1,12 @@
 import {Router} from "express";
 import { addVideoToPlaylist, removeVideoToPlaylist } from "../controllers/playlist.js";
-import { editVideo, uploadVideo,watchVideo,likeVideo,dislikeVideo } from "../controllers/video.js";
+import { editVideo, uploadVideo,watchVideo,likeVideo,dislikeVideo, getVideosByChannel } from "../controllers/video.js";
 import { getAccessToRoute, getPlaylistOwnerAccess, getVideoOwnerAccess } from "../middlewares/auth/auth.js";
-import { isPlaylistExists, isVideoExists, isVideoExistsInPlaylist } from "../middlewares/query/queryMiddleware.js";
+import { isChannelExist, isPlaylistExists, isVideoExists, isVideoExistsInPlaylist } from "../middlewares/query/queryMiddleware.js";
 import commentRoutes from "./comment.js";
-import playlistRoutes from "./playlist.js";
 
 const router = Router({mergeParams:true});
+router.get("/videos", [getAccessToRoute, isChannelExist], getVideosByChannel);
 router.post("/upload", getAccessToRoute, uploadVideo);
 router.put("/edit/:videoSlug", [getAccessToRoute, isVideoExists ,getVideoOwnerAccess], editVideo);
 router.get("/watch/:videoSlug", [getAccessToRoute,isVideoExists], watchVideo);

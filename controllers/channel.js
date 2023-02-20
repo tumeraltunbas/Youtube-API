@@ -1,6 +1,7 @@
 import CustomizedError from "../helpers/error/CustomizedError.js";
 import { uploadFile } from "../helpers/fileUpload/fileUpload.js";
 import Channel from "../models/Channel.js";
+import Playlist from "../models/Playlist.js";
 import User from "../models/User.js";
 import Video from "../models/Video.js";
 
@@ -43,9 +44,13 @@ export const editChannelInformations = async(req, res, next) => {
 
 export const getChannel = async(req, res, next) => {
     try {
-        const {slug} = req.params;
-        const channel = await Channel.findOne({slug:slug}).select("name channelDescription videos videoCount subscribeCount channelProfilePhoto location channels email totalViews");
-        return res.status(200).json({success:true, data:channel}); 
+        const {channelSlug} = req.params;
+        const channel = await Channel.findOne({slug:channelSlug, isVisible:true}).select("_id");
+        const videos = await Video.find({channel:channel.id, isVisible:true}).limit(5).select("title video thumbnail viewCount uploadedAt").sort({uploadedAt:"desc"});
+        const highlightedVideo = await Video.findOne({isHighlighted:true, isVisible:true}).select("title description video thumbnail viewCount uploadedAt");
+        const popularVideos = await Video.find({channel:channel.id, isVisible:true}).limit(5).select("title video thumbnail viewCount uploadedAt").sort({viewCount:"asc"});
+        const highlightedPlaylists = await Playlist.find({isHighlighted:true,isVisible:true}).select("title").populate({path:"video", select: "title video thumbnail viewCount createdAt"});
+        return res.status(200).json({success:true, videos:videos, highlightedVideo:highlightedVideo, popularVideos:popularVideos, highlightedPlaylists:highlightedPlaylists});
     }
     catch(err){
         return next(err);

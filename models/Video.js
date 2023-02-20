@@ -41,10 +41,6 @@ const VideoSchema = new mongoose.Schema({
             ref: "User"
         }
     ],
-    isHomepage: {
-        type:Boolean,
-        default:false
-    },
     viewCount: {
         type:Number,
         default:0

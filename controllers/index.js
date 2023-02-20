@@ -17,3 +17,14 @@ export const searchVideo = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const index = async(req, res, next) => {
+    try{
+        const channels = await Channel.find({subscribers:req.user.id}).select("_id name");
+        const videos = await Video.find({channel:channels}).select("title thumbnail video viewCount createdAt channel").populate({path:"channel", select:"name channelProfilePhoto"}).limit(30).sort({uploadedAt:"desc"});
+        return res.status(200).json({success:true, data:channels, videos:videos});
+    }
+    catch(err){
+        return next(err);
+    }
+}

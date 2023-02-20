@@ -82,3 +82,14 @@ export const unsubscribe = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const channelAbout = async(req, res, next) => {
+    try {
+        const {channelSlug} = req.params;
+        const channel = await Channel.findOne({slug:channelSlug, isVisible:true}).select("_id channelDescription location totalViews createdAt");
+        return res.status(200).json({success:true, data:channel});
+    }
+    catch(err){
+        return next(err);
+    }
+}

@@ -40,6 +40,8 @@ export const uploadVideo = async(req, res, next) => {
             const thumbnail = await uploadFile(req, res, next, "thumbnails", uploadedVideo.id);
             await Video.updateOne({_id:uploadedVideo.id}, {thumbnail:thumbnail}, {runValidators:true, new:true});
         }
+        channel.videoCount += 1;
+        await channel.save();
         return res.status(200).json({success:true, message:"Video successfully uploaded"});
     }
     catch(err) {

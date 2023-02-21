@@ -20,6 +20,10 @@ const ReportSchema = new mongoose.Schema({
         type:String,
         default:null,
     },
+    outcome: {
+        type:Boolean,
+        default:null
+    },
     isVisible: {
         type:Boolean,
         default:true

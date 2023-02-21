@@ -4,10 +4,12 @@ const ReportSchema = new mongoose.Schema({
     video: {
         type:mongoose.Schema.ObjectId,
         required:[true, "Video can not be null"],
+        ref:"Video"
     },
     user:{
         type:mongoose.Schema.ObjectId,
-        required:[true, "User can not be null"]
+        required:[true, "User can not be null"],
+        ref:"User"
     },
     reason: {
         type: String,

@@ -2,6 +2,7 @@ import CustomizedError from "../../helpers/error/CustomizedError.js";
 import Channel from "../../models/Channel.js";
 import ChannelVerification from "../../models/ChannelVerification.js";
 import Playlist from "../../models/Playlist.js";
+import Report from "../../models/Report.js";
 import Video from "../../models/Video.js";
 
 export const isVideoExists = async(req, res, next) => {
@@ -75,6 +76,18 @@ export const isVerificationRequestExists = async(req, res, next) => {
         const {channelId} = req.params;
         if(!await ChannelVerification.findOne({channel:channelId, isVisible:true}))
         return next(new CustomizedError(400, "There is no verification request by this channel"));
+        next();
+    }
+    catch(err){
+        return next(err);
+    }
+}
+
+export const isReportExists = async(req, res, next) => {
+    try{
+        const {reportId} = req.params;
+        if(!await Report.findOne({_id:reportId, isVisible:true}).select("_id isVisible"))
+        return next(new CustomizedError(400, "There is no report with this id"));
         next();
     }
     catch(err){

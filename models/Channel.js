@@ -8,7 +8,8 @@ const ChannelSchema = new mongoose.Schema({
         required:[true, "Channel name can not be null"]
     },
     channelDescription: {
-        type:String
+        type:String,
+        default:null
     },
     videos: [{
         type: mongoose.Schema.ObjectId,

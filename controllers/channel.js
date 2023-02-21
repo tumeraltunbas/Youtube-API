@@ -132,6 +132,8 @@ export const searchInChannel = async(req, res, next) => {
 export const channelVerificationRequest = async(req, res, next) => {
     try{
         const channel = await Channel.findOne({user:req.user.id}).select("_id");
+        if(channel.isChannelVerified)
+        return next(new CustomizedError(400, "Your channel already verified"));
         if(await ChannelVerification.findOne({channel:channel.id, isVisible:true}))
         return next(new CustomizedError(400, "You already have an unfinished channel verification request"))
         if((channel.channelProfilePhoto != "profile.jpg" && channel.channelBanner != "banner.jpg" && channel.isVisible == true && channel.subscribeCount > 100000 && channel.videoCount > 0)) {

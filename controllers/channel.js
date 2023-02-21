@@ -128,3 +128,21 @@ export const searchInChannel = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const channelVerificationRequest = async(req, res, next) => {
+    try{
+        const channel = await Channel.findOne({user:req.user.id}).select("_id");
+        if(await ChannelVerification.findOne({channel:channel.id, isVisible:true}))
+        return next(new CustomizedError(400, "You already have an unfinished channel verification request"))
+        if((channel.channelProfilePhoto != "profile.jpg" && channel.channelBanner != "banner.jpg" && channel.isVisible == true && channel.subscribeCount > 100000 && channel.videoCount > 0)) {
+            await ChannelVerification.create({channel:channel.id});
+        }
+        else{
+            return next(new CustomizedError(401, "You do not meet the qualifications to request channel verification"));
+        }
+        return res.status(200).json({success:true, message:"Channel verification request has been sent."});
+    }
+    catch(err){
+        return next(err);
+    }
+}

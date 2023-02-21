@@ -1,5 +1,6 @@
 import CustomizedError from "../../helpers/error/CustomizedError.js";
 import Channel from "../../models/Channel.js";
+import ChannelVerification from "../../models/ChannelVerification.js";
 import Playlist from "../../models/Playlist.js";
 import Video from "../../models/Video.js";
 
@@ -62,6 +63,18 @@ export const isVideoExistsInPlaylist = async(req, res, next) => {
         const video = await Video.findOne({slug:videoSlug}).select("_id");
         if(!playlist.videos.includes(video.id))
         return next(new CustomizedError(400, "There is no video in this playlist"));
+        next();
+    }
+    catch(err){
+        return next(err);
+    }
+}
+
+export const isVerificationRequestExists = async(req, res, next) => {
+    try{
+        const {channelId} = req.params;
+        if(!await ChannelVerification.findOne({channel:channelId, isVisible:true}))
+        return next(new CustomizedError(400, "There is no verification request by this channel"));
         next();
     }
     catch(err){

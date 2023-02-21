@@ -6,6 +6,10 @@ const ChannelVerificationSchema = new mongoose.Schema({
         ref:"Channel",
         required:[true, "Channel can not be null"]
     },
+    outcome: {
+        type:Boolean,
+        default:null
+    },
     isVisible: {
         type:Boolean,
         default:true

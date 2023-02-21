@@ -20,7 +20,7 @@ export const verifyChannel = async(req, res, next) => {
     try{
         const {channelId} = req.params;
         const channel = await Channel.findOne({_id:channelId}).select("_id email");
-        await ChannelVerification.updateOne({channel:channel.id}, {isVisible:false}, {new:true});
+        await ChannelVerification.updateOne({channel:channel.id}, {isVisible:false, outcome:true}, {new:true});
         await channel.updateOne({isChannelVerified:true}, {new:true});
         sendMail(createMailOptions(channel.email, 'Channel Verification Request', '<p>Your channel verification request has been positive. Your channel has been successfully verified.</p>'));
         return res.status(200).json({success:true, message:"Channel has been verified"});
@@ -34,7 +34,7 @@ export const refuseChannelVerification = async(req, res, next) => {
     try{
         const {channelId} = req.params;
         const channel = await Channel.findOne({_id:channelId}).select("_id email");
-        await ChannelVerification.updateOne({channel:channelId}, {isVisible:false}, {new:true});
+        await ChannelVerification.updateOne({channel:channelId}, {isVisible:false, outcome:false}, {new:true});
         sendMail(createMailOptions(channel.email, 'Channel Verification Request', '<p>Your channel verification request has been negative. Your channel has not been verified.</p>'));
         return res.status(200).json({success:true, message:"Verification request has been refused"});
     }

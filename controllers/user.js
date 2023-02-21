@@ -13,7 +13,7 @@ export const getLikedVideos = async(req, res, next) => {
 
 export const getWatchHistory = async(req, res, next) => {
     try{
-        const videos = await Video.find({views:req.user.id}).select("_id title thumbnail viewCount createdAt channel").sort({createdAt:"desc"});
+        const videos = await Video.find({views:req.user.id}).select("_id title thumbnail viewCount createdAt channel").sort({createdAt:"desc"}).populate({path:"channel", select: "name channelProfilePhoto"});
         return res.status(200).json({success:true, data:videos});
     }
     catch(err){

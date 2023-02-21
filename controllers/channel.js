@@ -1,9 +1,12 @@
 import CustomizedError from "../helpers/error/CustomizedError.js";
 import { uploadFile } from "../helpers/fileUpload/fileUpload.js";
 import Channel from "../models/Channel.js";
+import ChannelVerification from "../models/ChannelVerification.js";
 import Playlist from "../models/Playlist.js";
 import User from "../models/User.js";
 import Video from "../models/Video.js";
+import root from "app-root-path"
+import path from "path";
 
 export const createChannel = async(req, res, next) => {
     try{
@@ -27,6 +30,18 @@ export const uploadChannelProfilePhoto = async(req, res, next) => {
         return res.status(200).json({success:true, message:"Channel profile photo successfully uploaded"});
     }
     catch(err) {
+        return next(err);
+    }
+}
+
+export const uploadBanner = async(req, res, next) => {
+    try{
+        const channel = await Channel.findOne({user:req.user.id}).select("_id channelBanner");
+        const fileName = await uploadFile(req, res, next, "banner", channel.id);
+        await channel.updateOne({channelBanner:fileName}, {new:true});
+        return res.status(200).json({success:true, message:"Banner has been uploaded"});
+    }
+    catch(err){
         return next(err);
     }
 }

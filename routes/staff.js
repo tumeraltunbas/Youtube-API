@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { verificationRequests, verifyChannel, refuseChannelVerification, getReports, confirmReport } from "../controllers/staff.js";
+import { verificationRequests, verifyChannel, refuseChannelVerification, getReports, confirmReport, refuseReport } from "../controllers/staff.js";
 import {getAccessToRoute, getStaffAccess} from "../middlewares/auth/auth.js";
 import { isReportExists, isVerificationRequestExists } from "../middlewares/query/queryMiddleware.js";
 
@@ -9,5 +9,6 @@ router.get("/verification-requests/:channelId/verify", [getAccessToRoute, getSta
 router.get("/verification-requests/:channelId/refuse", [getAccessToRoute, getStaffAccess, isVerificationRequestExists], refuseChannelVerification);
 router.get("/reports", [getAccessToRoute, getStaffAccess], getReports);
 router.get("/reports/:reportId/confirm", [getAccessToRoute, getStaffAccess, isReportExists], confirmReport);
+router.get("/reports/:reportId/refuse", [getAccessToRoute, getStaffAccess, isReportExists], refuseReport);
 
 export default router;

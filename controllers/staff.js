@@ -1,3 +1,4 @@
+import Channel from "../models/Channel.js";
 import ChannelVerification from "../models/ChannelVerification.js";
 export const verificationRequests = async(req, res, next) => {
     try{
@@ -6,6 +7,18 @@ export const verificationRequests = async(req, res, next) => {
     }
     catch(err)
     {
+        return next(err);
+    }
+}
+
+export const verifyChannel = async(req, res, next) => {
+    try{
+        const {channelId} = req.params;
+        await ChannelVerification.updateOne({channel:channelId}, {isVisible:false}, {new:true});
+        await Channel.updateOne({_id:channelId, isVisible:true}, {isChannelVerified:true}, {new:true});
+        return res.status(200).json({success:true, message:"Channel has been verified"});
+    }
+    catch(err){
         return next(err);
     }
 }

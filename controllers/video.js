@@ -5,6 +5,7 @@ import path from "path";
 import root from "app-root-path";
 import { uploadFile } from "../helpers/fileUpload/fileUpload.js";
 import CustomizedError from "../helpers/error/CustomizedError.js";
+import Report from "../models/Report.js";
 
 
 export const getVideosByChannel = async(req, res, next) => {
@@ -121,6 +122,23 @@ export const dislikeVideo = async(req, res, next) => {
         return res.status(200).json({success:true, message: "The video has been successfully disliked"});
     }
     catch(err) {
+        return next(err);
+    }
+}
+
+export const reportVideo = async(req, res, next) => {
+    try{
+        const {videoSlug} = req.params;
+        const {reason, details} = req.body;
+        if(reason == "Problem is not stated here"){
+            if(!details)
+            return next(new CustomizedError(400, "You must specify details"));
+        }
+        const video = await Video.findOne({slug:videoSlug}).select("_id");
+        await Report.create({video:video.id, user:req.user.id, reason:reason, details:details});
+        return res.status(200).json({success:true, message:"Report has been sent"});
+    }
+    catch(err){
         return next(err);
     }
 }

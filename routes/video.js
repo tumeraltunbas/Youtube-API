@@ -1,6 +1,6 @@
 import {Router} from "express";
 import { addVideoToPlaylist, removeVideoToPlaylist } from "../controllers/playlist.js";
-import { editVideo, uploadVideo,watchVideo,likeVideo,dislikeVideo, getVideosByChannel } from "../controllers/video.js";
+import { editVideo, uploadVideo,watchVideo,likeVideo,dislikeVideo, getVideosByChannel,reportVideo } from "../controllers/video.js";
 import { getAccessToRoute, getPlaylistOwnerAccess, getVideoOwnerAccess } from "../middlewares/auth/auth.js";
 import { isChannelExist, isPlaylistExists, isVideoExists, isVideoExistsInPlaylist } from "../middlewares/query/queryMiddleware.js";
 import commentRoutes from "./comment.js";
@@ -14,6 +14,7 @@ router.get("/like/:videoSlug", [getAccessToRoute, isVideoExists], likeVideo);
 router.get("/dislike/:videoSlug", [getAccessToRoute, isVideoExists], dislikeVideo);
 router.get("/playlist/:videoSlug/add/:playlistId", [getAccessToRoute, isVideoExists, isPlaylistExists,getPlaylistOwnerAccess], addVideoToPlaylist);
 router.get("/playlist/:videoSlug/remove/:playlistId", [getAccessToRoute, isVideoExists, isPlaylistExists, isVideoExistsInPlaylist, getPlaylistOwnerAccess], removeVideoToPlaylist);
+router.post("/report/:videoSlug", [getAccessToRoute, isVideoExists], reportVideo);
 router.use("/comments/:videoSlug", commentRoutes)
 
 export default router;

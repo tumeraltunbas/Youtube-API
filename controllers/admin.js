@@ -1,3 +1,4 @@
+import CustomizedError from "../helpers/error/CustomizedError.js";
 import Channel from "../models/Channel.js";
 import User from "../models/User.js";
 
@@ -27,6 +28,21 @@ export const getAllStaffs = async(req, res, next) => {
     try{
         const staffs = await User.find({role:"staff"}).select("_id firstName lastName email gender phone role isActive createdAt");
         return res.status(200).json({success:true, data:staffs});
+    }
+    catch(err){
+        return next(err);
+    }
+}
+
+export const editStaff = async(req, res, next) => {
+    try{
+        const {userId} = req.params;
+        const{role} = req.body;
+        const user = await User.findOne({_id:userId}).select("role");
+        if(user.role != "staff")
+        return next(new CustomizedError(403, "This user is not staff. Therefore you can not edit him/her"));
+        await user.update({role:role});
+        return res.status(200).json({success:true, message:"This staff has been updated"});
     }
     catch(err){
         return next(err);

@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { getAllUsers, getUserById, blockUser,unblockUser ,getAllStaffs, editStaff, getAllChannels, getChannelBySlug, getAllVideos } from "../controllers/admin.js";
 import {getAccessToRoute, getAdminAccess} from "../middlewares/auth/auth.js";
-import { isChannelExist, isUserExists } from "../middlewares/query/queryMiddleware.js";
+import { isChannelExist, isUserExists, isVideoExists } from "../middlewares/query/queryMiddleware.js";
 
 const router = Router();
 router.use([getAccessToRoute, getAdminAccess]);
@@ -14,4 +14,5 @@ router.put("staff/edit/:userId", isUserExists, editStaff);
 router.get("/channels", getAllChannels);
 router.get("/channels/:channelSlug", isChannelExist, getChannelBySlug);
 router.get("/videos", getAllVideos);
+router.get("/videos/:videoSlug", isVideoExists, getVideoBySlug);
 export default router;

@@ -116,3 +116,14 @@ export const getAllVideos = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const getVideoBySlug = async(req, res, next) => {
+    try{
+        const {videoSlug} = req.params;
+        const video = await Video.findOne({slug:videoSlug}).select("title thumbnail video viewCount likeCount dislikeCount commentCount isVisible isHidByAdmin");
+        return res.status(200).json({success:true, data:video});
+    }
+    catch(err){
+        return next(err);
+    }
+}

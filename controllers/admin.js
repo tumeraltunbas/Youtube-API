@@ -108,7 +108,7 @@ export const getChannelBySlug = async(req, res, next) => {
 
 export const getAllVideos = async(req, res, next) => {
     try{
-        const videos = await Video.find({}).select("title thumbnail channel viewCount likeCount dislikeCount commentCount isVisible isHidByAdmin");
+        const videos = await Video.find({}).select("_id title thumbnail channel viewCount likeCount dislikeCount commentCount isVisible isHidByAdmin");
         const videoCount = videos.length;
         return res.status(200).json({success:true, data:videos, videoCount:videoCount});
     }
@@ -120,8 +120,22 @@ export const getAllVideos = async(req, res, next) => {
 export const getVideoBySlug = async(req, res, next) => {
     try{
         const {videoSlug} = req.params;
-        const video = await Video.findOne({slug:videoSlug}).select("title thumbnail video viewCount likeCount dislikeCount commentCount isVisible isHidByAdmin");
+        const video = await Video.findOne({slug:videoSlug});
         return res.status(200).json({success:true, data:video});
+    }
+    catch(err){
+        return next(err);
+    }
+}
+
+export const hideVideo = async(req, res, next) => {
+    try{
+        const {videoSlug} = req.params;
+        const video = await Video.findOne({slug:videoSlug}).select("_id isVisible isHidByAdmin");
+        if(video.isVisible == false && video.isHidByAdmin == true)
+        return next(new CustomizedError(400, "This video already hid by admin"));
+        await video.update({isVisible:false, isHidByAdmin:true});
+        return res.status(200).json({success:true, message:"Video has been hidden"});
     }
     catch(err){
         return next(err);

@@ -4,11 +4,12 @@ import {getAccessToRoute, getStaffAccess} from "../middlewares/auth/auth.js";
 import { isReportExists, isVerificationRequestExists } from "../middlewares/query/queryMiddleware.js";
 
 const router = Router();
-router.get("/verification-requests", [getAccessToRoute, getStaffAccess], verificationRequests);
-router.get("/verification-requests/:channelId/verify", [getAccessToRoute, getStaffAccess, isVerificationRequestExists], verifyChannel);
-router.get("/verification-requests/:channelId/refuse", [getAccessToRoute, getStaffAccess, isVerificationRequestExists], refuseChannelVerification);
-router.get("/reports", [getAccessToRoute, getStaffAccess], getReports);
-router.get("/reports/:reportId/confirm", [getAccessToRoute, getStaffAccess, isReportExists], confirmReport);
-router.get("/reports/:reportId/refuse", [getAccessToRoute, getStaffAccess, isReportExists], refuseReport);
+router.use([getAccessToRoute, getStaffAccess]);
+router.get("/verification-requests", verificationRequests);
+router.get("/verification-requests/:channelId/verify", isVerificationRequestExists, verifyChannel);
+router.get("/verification-requests/:channelId/refuse", isVerificationRequestExists, refuseChannelVerification);
+router.get("/reports", getReports);
+router.get("/reports/:reportId/confirm", isReportExists, confirmReport);
+router.get("/reports/:reportId/refuse", isReportExists, refuseReport);
 
 export default router;

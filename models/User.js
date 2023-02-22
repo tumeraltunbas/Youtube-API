@@ -81,6 +81,10 @@ const UserSchema = new mongoose.Schema({
         type:Date,
         default:null
     },
+    isBlockedByAdmin: {
+        type:Boolean,
+        default:false
+    },
     isActive: {
         type:Boolean,
         default:true

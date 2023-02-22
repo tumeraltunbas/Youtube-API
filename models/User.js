@@ -26,6 +26,7 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "Password can not be null"],
+        select:false
     },
     gender: {
         type: Boolean,

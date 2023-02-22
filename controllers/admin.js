@@ -24,6 +24,22 @@ export const getUserById = async(req, res, next) => {
     }
 }    
 
+export const blockUser = async(req, res, next) => {
+    try{
+        const {userId} = req.params;
+        const user = await User.findOne({_id:userId}).select("_id role isActive");
+        if(user.id == req.user.id)
+        return next(new CustomizedError(400, "You can not block yourself"));
+        if(user.role == "admin")
+        return next(new CustomizedError(400, "You can not block admin"));
+        await user.update({isActive:false, isBlockedByAdmin:true});
+        return res.status(200).json({success:true, message:"User has been blocked"});
+    }
+    catch(err){
+        return next(err);
+    }
+}
+
 export const getAllStaffs = async(req, res, next) => {
     try{
         const staffs = await User.find({role:"staff"}).select("_id firstName lastName email gender phone role isActive createdAt");

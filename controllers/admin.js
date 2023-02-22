@@ -1,6 +1,7 @@
 import CustomizedError from "../helpers/error/CustomizedError.js";
 import Channel from "../models/Channel.js";
 import User from "../models/User.js";
+import Video from "../models/Video.js";
 
 export const getAllUsers = async(req, res, next) => {
     try{
@@ -99,6 +100,17 @@ export const getChannelBySlug = async(req, res, next) => {
         const {channelSlug} = req.params;
         const channel = await Channel.findOne({slug:channelSlug});
         return res.status(200).json({success:true, data:channel});
+    }
+    catch(err){
+        return next(err);
+    }
+}
+
+export const getAllVideos = async(req, res, next) => {
+    try{
+        const videos = await Video.find({}).select("title thumbnail channel viewCount likeCount dislikeCount commentCount isVisible isHidByAdmin");
+        const videoCount = videos.length;
+        return res.status(200).json({success:true, data:videos, videoCount:videoCount});
     }
     catch(err){
         return next(err);

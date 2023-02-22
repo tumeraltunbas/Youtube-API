@@ -1,7 +1,7 @@
 import {Router} from "express";
-import { getAllUsers, getUserById, blockUser,unblockUser ,getAllStaffs, editStaff, getAllChannels, getChannelBySlug, getAllVideos,getVideoBySlug,hideVideo } from "../controllers/admin.js";
+import { getAllUsers, getUserById, blockUser,unblockUser ,getAllStaffs, editStaff, getAllChannels, getChannelBySlug, getAllVideos,getVideoBySlug,hideVideo, showVideo } from "../controllers/admin.js";
 import {getAccessToRoute, getAdminAccess} from "../middlewares/auth/auth.js";
-import { isChannelExist, isUserExists, isVideoExists } from "../middlewares/query/queryMiddleware.js";
+import { isChannelExist, isUserExists } from "../middlewares/query/queryMiddleware.js";
 
 const router = Router();
 router.use([getAccessToRoute, getAdminAccess]);
@@ -16,4 +16,5 @@ router.get("/channels/:channelSlug", isChannelExist, getChannelBySlug);
 router.get("/videos", getAllVideos);
 router.get("/videos/:videoSlug", getVideoBySlug);
 router.get("/videos/:videoSlug/hide", hideVideo);
+router.get("/videos/:videoSlug/show", showVideo);
 export default router;

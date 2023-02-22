@@ -32,6 +32,8 @@ export const blockUser = async(req, res, next) => {
         return next(new CustomizedError(400, "You can not block yourself"));
         if(user.role == "admin")
         return next(new CustomizedError(400, "You can not block admin"));
+        if(user.isBlockedByAdmin == true && user.isActive == false)
+        return next(new CustomizedError(400, "This user already blocked"));
         await user.update({isActive:false, isBlockedByAdmin:true});
         return res.status(200).json({success:true, message:"User has been blocked"});
     }

@@ -40,6 +40,22 @@ export const blockUser = async(req, res, next) => {
     }
 }
 
+export const unblockUser = async(req, res, next) => {
+    try{
+        const {userId} = req.params;
+        const user = await User.findOne({_id:userId}).select("_id role isActive");
+        if(user.id == req.user.id)
+        return next(new CustomizedError(400, "You can not block yourself"));
+        if(user.isBlockedByAdmin == false && user.isActive==true)
+        return next(new CustomizedError(400, "This user already unblocked"))
+        await user.update({isBlockedByAdmin:false, isActive:true});
+        return res.status(200).json({success:true, message:"User has been unblocked"});
+    }   
+    catch(err){
+        return next(err);
+    }
+}
+
 export const getAllStaffs = async(req, res, next) => {
     try{
         const staffs = await User.find({role:"staff"}).select("_id firstName lastName email gender phone role isActive createdAt");

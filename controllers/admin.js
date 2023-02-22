@@ -21,7 +21,17 @@ export const getUserById = async(req, res, next) => {
     catch(err){
         return next(err);
     }
-}             
+}    
+
+export const getAllStaffs = async(req, res, next) => {
+    try{
+        const staffs = await User.find({role:"staff"}).select("_id firstName lastName email gender phone role isActive createdAt");
+        return res.status(200).json({success:true, data:staffs});
+    }
+    catch(err){
+        return next(err);
+    }
+}
 
 export const getAllChannels = async(req, res, next) => {
     try{

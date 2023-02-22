@@ -4,6 +4,7 @@ import channelRoutes from "./channel.js";
 import playlistRoutes from "./playlist.js";
 import staffRoutes from "./staff.js";
 import userRoutes from "./user.js";
+import adminRoutes from "./admin.js";
 import { index, trends, searchVideo } from "../controllers/index.js";
 import { getAccessToRoute } from "../middlewares/auth/auth.js";
 
@@ -15,5 +16,6 @@ router.use("/channel", channelRoutes);
 router.use("/playlist", playlistRoutes);
 router.use("/staff", staffRoutes);
 router.use("/user", userRoutes);
+router.use("/admin", adminRoutes);
 router.get("/search",[getAccessToRoute], searchVideo);
 export default router;

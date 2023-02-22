@@ -99,7 +99,7 @@ export const isReportExists = async(req, res, next) => {
 export const isUserExists = async(req, res, next) => {
     try{
         const {userId} = req.params;
-        if(!await User.findOne({_id:userId}).select("_id"))
+        if(!await User.findOne({_id:userId, isActive:true}).select("_id"))
         return next(new CustomizedError(400, "There is no user with that id"));
         next();
     }

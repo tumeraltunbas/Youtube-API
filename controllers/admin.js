@@ -33,3 +33,14 @@ export const getAllChannels = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const getChannelBySlug = async(req, res, next) => {
+    try{
+        const {channelSlug} = req.params;
+        const channel = await Channel.findOne({slug:channelSlug});
+        return res.status(200).json({success:true, data:channel});
+    }
+    catch(err){
+        return next(err);
+    }
+}

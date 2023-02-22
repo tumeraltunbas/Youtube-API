@@ -78,6 +78,10 @@ const VideoSchema = new mongoose.Schema({
         type:Boolean,
         default:true
     },
+    isHidByAdmin:{
+        type:Boolean,
+        default:false
+    },
     uploadedAt: {
         type:Date,
         default: Date.now()

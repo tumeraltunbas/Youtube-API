@@ -3,6 +3,7 @@ import Channel from "../../models/Channel.js";
 import ChannelVerification from "../../models/ChannelVerification.js";
 import Playlist from "../../models/Playlist.js";
 import Report from "../../models/Report.js";
+import User from "../../models/User.js";
 import Video from "../../models/Video.js";
 
 export const isVideoExists = async(req, res, next) => {
@@ -88,6 +89,18 @@ export const isReportExists = async(req, res, next) => {
         const {reportId} = req.params;
         if(!await Report.findOne({_id:reportId, isVisible:true}).select("_id isVisible"))
         return next(new CustomizedError(400, "There is no report with this id"));
+        next();
+    }
+    catch(err){
+        return next(err);
+    }
+}
+
+export const isUserExists = async(req, res, next) => {
+    try{
+        const {userId} = req.params;
+        if(!await User.findOne({_id:userId}).select("_id"))
+        return next(new CustomizedError(400, "There is no user with that id"));
         next();
     }
     catch(err){

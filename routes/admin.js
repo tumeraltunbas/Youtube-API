@@ -14,6 +14,6 @@ router.put("staff/edit/:userId", isUserExists, editStaff);
 router.get("/channels", getAllChannels);
 router.get("/channels/:channelSlug", isChannelExist, getChannelBySlug);
 router.get("/videos", getAllVideos);
-router.get("/videos/:videoSlug", isVideoExists, getVideoBySlug);
-router.get("/videos/:videoSlug/hide", isVideoExists, hideVideo);
+router.get("/videos/:videoSlug", getVideoBySlug);
+router.get("/videos/:videoSlug/hide", hideVideo);
 export default router;

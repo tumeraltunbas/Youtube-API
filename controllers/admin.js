@@ -121,6 +121,8 @@ export const getVideoBySlug = async(req, res, next) => {
     try{
         const {videoSlug} = req.params;
         const video = await Video.findOne({slug:videoSlug});
+        if(!video)
+        return next(new CustomizedError(400, "There is no video with that slug"));
         return res.status(200).json({success:true, data:video});
     }
     catch(err){
@@ -132,6 +134,8 @@ export const hideVideo = async(req, res, next) => {
     try{
         const {videoSlug} = req.params;
         const video = await Video.findOne({slug:videoSlug}).select("_id isVisible isHidByAdmin");
+        if(!video)
+        return next(new CustomizedError(400, "There is no video with that slug"));
         if(video.isVisible == false && video.isHidByAdmin == true)
         return next(new CustomizedError(400, "This video already hid by admin"));
         await video.update({isVisible:false, isHidByAdmin:true});

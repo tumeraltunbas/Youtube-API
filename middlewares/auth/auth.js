@@ -85,3 +85,15 @@ export const getStaffAccess = async(req, res, next) => {
         return next(err);
     }
 }
+
+export const getAdminAccess = async(req, res, next) => {
+    try{
+        const user = await User.findOne({_id:req.user.id}).select("_id role");
+        if(user.role != "admin")
+        return next(new CustomizedError(403, "Only admins can access this route"));
+        next();
+    }
+    catch(err){
+        return next(err);
+    }
+} 
